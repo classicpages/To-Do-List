@@ -13,10 +13,13 @@
       <!-- task lists -->
       <div class="taskItems">
         <ul>
-          <li v-for="task in tasks" :key="task.id">
-            <button><i class="far fa-circle"></i>{{ task.title }}</button>
-            <button><i class="far fa-trash-alt"></i></button>
-          </li>
+          <task-item 
+          v-bind:task="task"
+          v-for="(task, index) in tasks"
+          :key="task.id"
+          @remove="removeTask(index)"
+          @complete="completeTask(task)"
+            ></task-item>
         </ul>
       </div>
       <!-- buttons -->
@@ -33,9 +36,14 @@
 </template>
 
 <script>
+import TaskItem from './Task-item.vue';
+
 export default {
   name: "Task",
   props: ["tasks"],
+  components: {
+    TaskItem
+  },
   data() {
     return {
       newTask: ""
@@ -65,11 +73,14 @@ export default {
     clearCompleted() {
       this.tasks = this.tasks.filter(this.inProgress);
     },
-
-
-
     clearAll() {
       this.tasks = [];
+    },
+    removeTask(index) {
+      this.tasks.splice(index, 1);
+    },
+    completeTask(task) {
+      task.completed = !task.completed;
     }
   },
 };
